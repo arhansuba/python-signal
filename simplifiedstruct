@@ -1,0 +1,38 @@
+import numpy as np
+import pandas as pd
+
+# Replace this with actual price data
+price_data = pd.read_csv('price_data.csv')
+
+# Define Nadaraya-Watson Envelope function
+def nadaraya_watson_envelope(price_data, bandwidth=0.1):
+    # Calculate smoothed values using Nadaraya-Watson method
+    smoothed_values = []
+    for i in range(len(price_data)):
+        # Implement Nadaraya-Watson smoothing here
+        # smoothed_value = ...
+        smoothed_values.append(smoothed_value)
+
+    # Calculate upper and lower envelopes
+    upper_envelope = np.array(smoothed_values) + bandwidth
+    lower_envelope = np.array(smoothed_values) - bandwidth
+
+    return upper_envelope, lower_envelope
+
+# Generate signals
+def generate_signals(price_data, bandwidth=0.1):
+    upper_envelope, lower_envelope = nadaraya_watson_envelope(price_data, bandwidth)
+    signals = []
+
+    for i in range(len(price_data)):
+        if price_data['Close'][i] > upper_envelope[i]:
+            signals.append('SELL')
+        elif price_data['Close'][i] < lower_envelope[i]:
+            signals.append('BUY')
+        else:
+            signals.append('HOLD')
+
+    return signals
+
+# Example usage
+signals = generate_signals(price_data)
