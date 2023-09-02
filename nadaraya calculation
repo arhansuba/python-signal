@@ -1,0 +1,74 @@
+import math
+
+h = 8
+mult = 3
+src = data
+k = 2
+y = []
+# ..............#
+up = []
+dn = []
+up_signal = []
+dn_signal = []
+up_temp = 0
+dn_temp = 0
+# .................#
+upper_band = []
+lower_band = []
+upper_band_signal = []
+lower_band_signal = []
+# ....................#
+sum_e = 0
+for i in range(len(data)):
+    sum = 0
+    sumw = 0
+    for j in range(len(data)):
+        w = math.exp(-(math.pow(i - j, 2) / (h * h * 2)))
+        sum += src[j] * w
+        sumw += w
+    y2 = sum / sumw
+    sum_e += abs(src[i] - y2)
+    y.insert(i, y2)
+mae = sum_e / len(data) * mult
+# print(mae)
+import numpy as np
+
+for i in range(len(data)):
+    y2 = y[i]
+    y1 = y[i - 1]
+
+    if y[i] > y[i - 1]:
+        up.insert(i, y[i])
+        if up_temp == 0:
+            up_signal.insert(i, data[i])
+        else:
+            up_signal.insert(i, np.nan)
+        up_temp = 1
+        else:
+            up_temp = 0
+            up.insert(i,np.nan)
+            up_signal.insert(i,np.nan)
+
+        if y[i]<y[i-1]:
+            dn.insert(i,y[i])
+            if dn_temp == 0:
+                dn_signal.insert(i,data[i])
+            else:
+                dn_signal.insert(i,np.nan)
+            dn_temp = 1
+        else:
+            dn_temp = 0
+            dn.insert(i,np.nan)
+            dn_signal.insert(i,np.nan)
+
+
+        upper_band.insert(i,y[i]+mae)
+        lower_band.insert(i,y[i]-mae)
+        if data[i]> upper_band[i]:
+            upper_band_signal.insert(i,data[i])
+        else:
+            upper_band_signal.insert(i,np.nan)
+        if data[i]<lower_band[i]:
+            lower_band_signal.insert(i,data[i])
+        else:
+            lower_band_signal.insert(i,np.nan)
