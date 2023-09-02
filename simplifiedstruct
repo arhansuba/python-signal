@@ -5,14 +5,21 @@ import numpy as np
 
 # Define Nadaraya-Watson Envelope function
 def nadaraya_watson_envelope(price_data, bandwidth=0.1):
-    # Calculate smoothed values using Nadaraya-Watson method
     smoothed_values = []
+
     for i in range(len(price_data)):
-        # Implement Nadaraya-Watson smoothing here
-        # smoothed_value = ...
+        xi = price_data.iloc[i]['Close']
+        weights = []
+
+        for j in range(len(price_data)):
+            xj = price_data.iloc[j]['Close']
+            kernel_weight = np.exp(-(xi - xj) ** 2 / (2 * bandwidth ** 2))
+            weights.append(kernel_weight)
+
+        weighted_prices = price_data['Close'] * weights
+        smoothed_value = weighted_prices.sum() / sum(weights)
         smoothed_values.append(smoothed_value)
 
-    # Calculate upper and lower envelopes
     upper_envelope = np.array(smoothed_values) + bandwidth
     lower_envelope = np.array(smoothed_values) - bandwidth
 
